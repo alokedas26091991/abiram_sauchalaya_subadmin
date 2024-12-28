@@ -51,10 +51,22 @@ class BookingsTable extends Table
         $this->setDisplayField('first_name');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('Users', [
+        
+		
+		$this->belongsTo('Users', [
+            'className' => 'Users',
             'foreignKey' => 'user_id',
-            'joinType' => 'INNER',
+            'propertyName' => 'user', // Alias for manager data
         ]);
+
+        // Relationship for supervisor
+        $this->belongsTo('Drivers', [
+            'className' => 'Users',
+            'foreignKey' => 'driver',
+            'propertyName' => 'driver', // Alias for supervisor data
+        ]);
+		
+		
         $this->belongsTo('States', [
             'foreignKey' => 'state_id',
             'joinType' => 'INNER',

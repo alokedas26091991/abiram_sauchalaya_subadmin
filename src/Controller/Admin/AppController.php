@@ -71,7 +71,7 @@ class AppController extends Controller
 					'_matchedRoute' => '/admin',
             ]
         ]);
-        $this->loadComponent('MyAcl',["request"=>$this->request]);
+        //$this->loadComponent('MyAcl',["request"=>$this->request]);
         
        $this->_access_type = [
             ACCESS_GENERAL => 'General',
