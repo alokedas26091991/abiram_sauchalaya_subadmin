@@ -20,6 +20,7 @@ class PaymentsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
+
     public function driverpayment()
     {
         $userObj = TableRegistry::getTableLocator()->get('Users');
@@ -36,12 +37,25 @@ class PaymentsController extends AppController
             echo $pay; // Access the current pay value
             if ($pay > 0) {
                 $bookingdetailsObj = $bookingObj->find()->where(['id' => $this->request->getData('id')[$key]])->first();
-                $payment = $this->Payments->newEmptyEntity();
+
+                $payment = $this->Payments->find("all")->where(['user_id' => $bookingdetailsObj->driver, 'bookings_id' => $this->request->getData('id')[$key]])->first();
+                if ($payment == 0) {
+
+                    $payment = $this->Payments->newEmptyEntity();
+                }
+
                 $payment->bookings_id = $this->request->getData('id')[$key];
+                $payment->user_id = $bookingdetailsObj->driver;
+                $payment->paid_amount = $pay;
+                $payment->payment_date = date('Y-m-d');
+                $payment->created_at = date('Y-m-d');
+                $payment->updated_at = date('Y-m-d');
 
                 $this->Payments->save($payment);
             }
         }
+
+        return $this->redirect(['action' => 'paymentlist']);
 
         $this->autoRender = false;
     }
@@ -56,14 +70,16 @@ class PaymentsController extends AppController
         $to_date = $this->request->getData('end_date');
         $driver = $this->request->getData('driver');
 
-        $query = $bookingObj->find()->contain(['Users', 'Drivers', 'States', 'Districts', 'Areas', 'PostOffices', 'Chambers', 'Tanks', 'Pipes'])
+        $query = $bookingObj->find()->contain(['Payments', 'Users', 'Drivers', 'States', 'Districts', 'Areas', 'PostOffices', 'Chambers', 'Tanks', 'Pipes'])
             ->where([
-                'entry_date >=' => $from_date,
-                'entry_date <=' => $to_date,
+                'Bookings.entry_date >=' => $from_date,
+                'Bookings.entry_date <=' => $to_date,
             ]);
 
+
+
         if ($driver !== null) {
-            $query->andWhere(['driver' => $driver]);
+            $query->andWhere(['Bookings.driver' => $driver]);
         }
 
 
@@ -81,13 +97,20 @@ class PaymentsController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function paymentlist()
     {
-        $payment = $this->Payments->get($id, [
-            'contain' => ['Bookings', 'Users'],
-        ]);
+        $bookings = $this->Payments->find()->contain(['Bookings', 'Bookings.Users', 'Users', 'Bookings.States', 'Bookings.Districts', 'Bookings.Areas', 'Bookings.PostOffices', 'Bookings.Chambers', 'Bookings.Tanks', 'Bookings.Pipes'])
+            ->where([
+                'Payments.is_deleted ' => 0
 
-        $this->set(compact('payment'));
+            ])->order(['Payments.id' => 'DESC']);
+
+        // echo '<pre>';
+        // print_r($bookings->first());
+        // echo '</pre>';
+        // die;
+
+        $this->set(compact('bookings'));
     }
 
     /**
@@ -119,7 +142,7 @@ class PaymentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function paymentedit($id = null)
     {
         $payment = $this->Payments->get($id, [
             'contain' => [],
@@ -129,7 +152,7 @@ class PaymentsController extends AppController
             if ($this->Payments->save($payment)) {
                 $this->Flash->success(__('The payment has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'paymentlist']);
             }
             $this->Flash->error(__('The payment could not be saved. Please, try again.'));
         }
@@ -145,7 +168,7 @@ class PaymentsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function deletepayment($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $payment = $this->Payments->get($id);
@@ -155,6 +178,6 @@ class PaymentsController extends AppController
             $this->Flash->error(__('The payment could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'paymentlist']);
     }
 }

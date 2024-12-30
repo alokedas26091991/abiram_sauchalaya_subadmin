@@ -3,7 +3,7 @@
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
                 <div class="heading1 margin_0">
-                    <h2>Driver Payment</h2>
+                    <h2> Payment List</h2>
                 </div>
                 <div class="xyz">
 
@@ -36,7 +36,8 @@
                                         <th>Tank</th>
                                         <th>Pipe</th>
                                         <th>Amount</th>
-                                        <th>Pay</th>
+                                        <th>Paid Amount</th>
+                                        <th>Action</th>
 
 
                                     </tr>
@@ -53,20 +54,25 @@
                                     ?>
                                         <tr>
                                             <td><?= $k++ ?></td>
-                                            <td><?= h($booking->driver->name) ?></td>
                                             <td><?= $booking->has('user') ? h($booking->user->name) : '' ?></td>
+                                            <td><?= h($booking->booking->user->name) ?></td>
 
-                                            <td><?= h($booking->contact_no) ?></td>
 
-                                            <td><?= $booking->has('chamber') ? h($booking->chamber->name) : '' ?></td>
-                                            <td><?= $booking->has('tank') ? h($booking->tank->name) : '' ?></td>
-                                            <td><?= $booking->has('pipe') ? h($booking->pipe->name) : '' ?></td>
-                                            <td><?= h($booking->amount) ?></td>
-                                            <td>
-                                                <input type="hidden" class="form-control" name="id[]" value="<?= $booking->id ?>">
-                                                <input type="text" value="<?= $booking->payment->paid_amount ?>" class="form-control" name="pay[]">
+                                            <td><?= $booking->booking->contact_no ?></td>
+
+                                            <td><?= $booking->booking->chamber->name ?></td>
+                                            <td><?= $booking->booking->tank->name ?></td>
+                                            <td><?= $booking->booking->pipe->name ?></td>
+                                            <td><?= $booking->booking->amount ?></td>
+
+                                            <td><?= $booking->paid_amount ?></td>
+
+                                            <td class="actions">
+
+                                                <?= $this->Html->link('<span class="fa fa-edit"></span><span class="sr-only">' . __('Edit') . '</span>', ['action' => 'paymentedit', $booking->id], ['escape' => false, 'class' => 'btn-default', 'title' => __('Edit')]) ?>
+
+                                                <?= $this->Form->postLink('<span class="fa fa-trash"></span><span class="sr-only">' . __('Delete') . '</span>', ['action' => 'deletepayment', $booking->id], ['escape' => false, 'class' => 'btn-default', 'confirm' => __('Are you sure you want to delete # {0}?', $booking->id)]) ?>
                                             </td>
-
 
                                         </tr>
                                     <?php endforeach; ?>

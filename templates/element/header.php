@@ -46,11 +46,31 @@
 										</li>
                                         
 										<li >
-										<a href="/admin/users/dashboard"  > <span>Payment List</span></a>
+										<a href="/admin/payments/paymentlist"  > <span>Payment List</span></a>
                        
 										</li>
                                         </ul>
-                                    </li>
+                     </li>
+					 
+					 
+					 <li class="helper">
+                                        <a href="#helper" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-tasks"></i>
+                                            Helper Payment
+                                        </a>
+                                   
+                                        <ul class="collapse list-unstyled" id="helper">
+										
+										<li >
+										<a href="/admin/payments/helperpayment"  > <span>Add Payment</span></a>
+                       
+										</li>
+                                        
+										<li >
+										<a href="/admin/payments/helperpaymentlist"  > <span>Payment List</span></a>
+                       
+										</li>
+                                        </ul>
+                     </li>
                                                  
                      
                      

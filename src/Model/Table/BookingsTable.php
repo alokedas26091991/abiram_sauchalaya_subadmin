@@ -66,6 +66,10 @@ class BookingsTable extends Table
             'propertyName' => 'driver', // Alias for supervisor data
         ]);
 		
+		$this->hasOne('Payments', [
+    'foreignKey' => 'bookings_id', // Ensure this matches the column in the `payments` table
+]);
+		
 		
         $this->belongsTo('States', [
             'foreignKey' => 'state_id',
