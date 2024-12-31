@@ -66,6 +66,22 @@ class BookingsTable extends Table
             'propertyName' => 'driver', // Alias for supervisor data
         ]);
 		
+		
+		// Relationship for supervisor
+        $this->belongsTo('Helper1', [
+            'className' => 'Users',
+            'foreignKey' => 'helper1',
+            'propertyName' => 'helper1', // Alias for supervisor data
+        ]);
+		
+		// Relationship for supervisor
+        $this->belongsTo('Helper2', [
+            'className' => 'Users',
+            'foreignKey' => 'helper2',
+            'propertyName' => 'helper2', // Alias for supervisor data
+        ]);
+		
+		
 		$this->hasOne('Payments', [
     'foreignKey' => 'bookings_id', // Ensure this matches the column in the `payments` table
 ]);
@@ -87,18 +103,43 @@ class BookingsTable extends Table
             'foreignKey' => 'post_office_id',
             'joinType' => 'INNER',
         ]);
+		
+		
         $this->belongsTo('Chambers', [
             'foreignKey' => 'chamber_id',
             'joinType' => 'INNER',
         ]);
+		
+		$this->belongsTo('UpdatedChambers', [
+            'className' => 'Chambers',
+            'foreignKey' => 'chamber_id_new',
+            'propertyName' => 'updatedchember', // Alias for supervisor data
+        ]);
+		
+		
         $this->belongsTo('Tanks', [
             'foreignKey' => 'tank_id',
             'joinType' => 'INNER',
         ]);
+		
+		
+		$this->belongsTo('UpdatedTanks', [
+            'className' => 'Tanks',
+            'foreignKey' => 'tank_id_new',
+            'propertyName' => 'updatedtank', // Alias for supervisor data
+        ]);
+		
         $this->belongsTo('Pipes', [
             'foreignKey' => 'pipe_id',
             'joinType' => 'INNER',
         ]);
+		
+		$this->belongsTo('UpdatedPipes', [
+            'className' => 'Pipes',
+            'foreignKey' => 'pipe_id_new',
+            'propertyName' => 'updatedpipe', // Alias for supervisor data
+        ]);
+		
 		$this->belongsTo('Vehicles', [
             'foreignKey' => 'vehicle_id',
             'joinType' => 'INNER',

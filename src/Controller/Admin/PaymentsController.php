@@ -29,24 +29,38 @@ class PaymentsController extends AppController
 
         $this->set(compact('program'));
     }
-    public function add_driver_payment()
+    public function helperpayment()
     {
-        $bookingObj = TableRegistry::getTableLocator()->get('Bookings');
-        foreach ($this->request->getData('pay') as $key => $pay) {
-            echo $this->request->getData('id')[$key]; // Access the matching id by key
-            echo $pay; // Access the current pay value
-            if ($pay > 0) {
-                $bookingdetailsObj = $bookingObj->find()->where(['id' => $this->request->getData('id')[$key]])->first();
+        $userObj = TableRegistry::getTableLocator()->get('Users');
+        $program = $userObj->find()->where(['is_deleted' => 0, 'is_active' => 1, 'user_type' => 4]);
 
-                $payment = $this->Payments->find("all")->where(['user_id' => $bookingdetailsObj->driver, 'bookings_id' => $this->request->getData('id')[$key]])->first();
+
+        $this->set(compact('program'));
+    }
+
+    public function add_helper_payment()
+    {
+
+        foreach ($this->request->getData('pay') as $key => $pay) {
+
+            if ($pay > 0) {
+
+
+                $payment = $this->Payments->find("all")->where(['bookings_id' => $this->request->getData('id')[$key]])->first();
                 if ($payment == 0) {
 
                     $payment = $this->Payments->newEmptyEntity();
                 }
 
                 $payment->bookings_id = $this->request->getData('id')[$key];
-                $payment->user_id = $bookingdetailsObj->driver;
-                $payment->paid_amount = $pay;
+
+                if ($this->request->getData('type')[$key] == 1) {
+                    $payment->helper1_payment_amount = $pay;
+                } else {
+                    $payment->helper2_payment_amount = $pay;
+                }
+
+
                 $payment->payment_date = date('Y-m-d');
                 $payment->created_at = date('Y-m-d');
                 $payment->updated_at = date('Y-m-d');
@@ -58,6 +72,70 @@ class PaymentsController extends AppController
         return $this->redirect(['action' => 'paymentlist']);
 
         $this->autoRender = false;
+    }
+    public function add_driver_payment()
+    {
+
+        foreach ($this->request->getData('pay') as $key => $pay) {
+            echo $this->request->getData('id')[$key]; // Access the matching id by key
+            echo $pay; // Access the current pay value
+            if ($pay > 0) {
+
+
+                $payment = $this->Payments->find("all")->where(['bookings_id' => $this->request->getData('id')[$key]])->first();
+                if ($payment == 0) {
+
+                    $payment = $this->Payments->newEmptyEntity();
+                }
+
+                $payment->bookings_id = $this->request->getData('id')[$key];
+
+                $payment->driver_payment_amount = $pay;
+                $payment->payment_date = date('Y-m-d');
+                $payment->created_at = date('Y-m-d');
+                $payment->updated_at = date('Y-m-d');
+
+                $this->Payments->save($payment);
+            }
+        }
+
+        return $this->redirect(['action' => 'paymentlist']);
+
+        $this->autoRender = false;
+    }
+    public function pending_helper_payment_list()
+    {
+
+        $bookingObj = TableRegistry::getTableLocator()->get('Bookings');
+
+
+
+        $from_date = $this->request->getData('start_date');
+        $to_date = $this->request->getData('end_date');
+        $driver = $this->request->getData('driver');
+
+        $query = $bookingObj->find()->contain(['Helper2', 'Helper1', 'Payments', 'Users', 'Drivers', 'States', 'Districts', 'Areas', 'PostOffices', 'Chambers', 'Tanks', 'Pipes'])
+            ->where([
+                'Bookings.entry_date >=' => $from_date,
+                'Bookings.entry_date <=' => $to_date,
+            ]);
+
+
+
+        $query->andWhere([
+            'Bookings.is_deleted' => '0', // AND condition
+            'OR' => [
+                'Bookings.helper1' => $driver,
+                'Bookings.helper2' => $driver
+            ]
+        ]);
+
+
+
+
+
+        $bookings = $query;
+        $this->set(compact('bookings', 'driver'));
     }
     public function pending_driver_payment_list()
     {
@@ -99,7 +177,7 @@ class PaymentsController extends AppController
      */
     public function paymentlist()
     {
-        $bookings = $this->Payments->find()->contain(['Bookings', 'Bookings.Users', 'Users', 'Bookings.States', 'Bookings.Districts', 'Bookings.Areas', 'Bookings.PostOffices', 'Bookings.Chambers', 'Bookings.Tanks', 'Bookings.Pipes'])
+        $bookings = $this->Payments->find()->contain(['Bookings', 'Bookings.Drivers', 'Bookings.Helper1', 'Bookings.Helper2', 'Bookings.Users', 'Bookings.States', 'Bookings.Districts', 'Bookings.Areas', 'Bookings.PostOffices', 'Bookings.Chambers', 'Bookings.Tanks', 'Bookings.Pipes'])
             ->where([
                 'Payments.is_deleted ' => 0
 
@@ -149,6 +227,9 @@ class PaymentsController extends AppController
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $payment = $this->Payments->patchEntity($payment, $this->request->getData());
+            $payment->driver_payment_amount = $this->request->getData('driver_payment_amount');
+            $payment->helper1_payment_amount = $this->request->getData('helper1_payment_amount');
+            $payment->helper2_payment_amount = $this->request->getData('helper2_payment_amount');
             if ($this->Payments->save($payment)) {
                 $this->Flash->success(__('The payment has been saved.'));
 
@@ -157,8 +238,8 @@ class PaymentsController extends AppController
             $this->Flash->error(__('The payment could not be saved. Please, try again.'));
         }
         $bookings = $this->Payments->Bookings->find('list', ['limit' => 200])->all();
-        $users = $this->Payments->Users->find('list', ['limit' => 200])->all();
-        $this->set(compact('payment', 'bookings', 'users'));
+
+        $this->set(compact('payment', 'bookings'));
     }
 
     /**

@@ -35,8 +35,8 @@ class Payment extends Entity
     protected $_accessible = [
         'bookings_id' => true,
  
-        'user_id' => true,
-        'paid_amount' => true,
+   
+     
         'payment_date' => true,
         'is_deleted' => true,
         'created_at' => true,

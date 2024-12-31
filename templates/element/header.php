@@ -66,9 +66,25 @@
 										</li>
                                         
 										<li >
-										<a href="/admin/payments/helperpaymentlist"  > <span>Payment List</span></a>
+										<a href="/admin/payments/paymentlist"  > <span>Payment List</span></a>
                        
 										</li>
+                                        </ul>
+                     </li>
+					 
+					 <li class="report">
+                                        <a href="#report" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-tasks"></i>
+                                           Report
+                                        </a>
+                                   
+                                        <ul class="collapse list-unstyled" id="report">
+										
+										<li >
+										<a href="/admin/reports"  > <span>List</span></a>
+                       
+										</li>
+                                        
+										
                                         </ul>
                      </li>
                                                  

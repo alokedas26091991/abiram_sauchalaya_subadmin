@@ -17,18 +17,17 @@
                     <div class="col-lg-12">
 
                         <div class="table-responsive-sm">
-                            <?= $this->Form->create(null, [
-                                'url' => [
-                                    'controller' => 'Payments',
-                                    'action' => 'add_driver_payment'
-                                ]
-                            ]); ?>
+
                             <table class="table table-striped projects" id="sampleTable">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th>#</th>
+
                                         <th>Driver</th>
+                                        <th>Helper 1</th>
+                                        <th>Helper 2</th>
                                         <th>Branch</th>
+                                        <th>Customer</th>
 
                                         <th>Contact No</th>
 
@@ -36,7 +35,9 @@
                                         <th>Tank</th>
                                         <th>Pipe</th>
                                         <th>Amount</th>
-                                        <th>Paid Amount</th>
+                                        <th>Driver Paid Amount</th>
+                                        <th>Helper1 Paid Amount</th>
+                                        <th>Helper2 Paid Amount</th>
                                         <th>Action</th>
 
 
@@ -54,9 +55,12 @@
                                     ?>
                                         <tr>
                                             <td><?= $k++ ?></td>
-                                            <td><?= $booking->has('user') ? h($booking->user->name) : '' ?></td>
-                                            <td><?= h($booking->booking->user->name) ?></td>
+                                            <td><?= $booking->booking->driver->name ?></td>
 
+                                            <td><?= $booking->booking->helper1->name ?></td>
+                                            <td><?= $booking->booking->helper2->name ?></td>
+                                            <td><?= h($booking->booking->user->name) ?></td>
+                                            <td><?= h($booking->booking->first_name) ?></td>
 
                                             <td><?= $booking->booking->contact_no ?></td>
 
@@ -65,7 +69,9 @@
                                             <td><?= $booking->booking->pipe->name ?></td>
                                             <td><?= $booking->booking->amount ?></td>
 
-                                            <td><?= $booking->paid_amount ?></td>
+                                            <td><?= $booking->driver_payment_amount ?></td>
+                                            <td><?= $booking->helper1_payment_amount ?></td>
+                                            <td><?= $booking->helper2_payment_amount ?></td>
 
                                             <td class="actions">
 
@@ -79,7 +85,7 @@
 
                                 </tbody>
                             </table>
-                            <?= $this->Form->button(__('Submit'), ['class' => 'btn btn-success']) ?>
+
 
                             <?= $this->Form->end() ?>
                         </div>

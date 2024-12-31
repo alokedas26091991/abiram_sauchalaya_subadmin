@@ -12,10 +12,29 @@
 
                                     <div class="form-group row">
                                         <label for="focusedinput" class="col-md-3 label-control" for="projectinput1">
-                                            <?= __('Paid Amount') ?></label>
+                                            <?= __('Driver Paid Amount') ?></label>
                                         <div class="col-sm-9">
                                             <?php
-                                            echo $this->Form->input('paid_amount', ['class' => 'form-control', 'empty' => true, 'label' => false, 'div' => false]);
+                                            echo $this->Form->input('driver_payment_amount', ['class' => 'form-control', 'empty' => true, 'label' => false, 'div' => false]);
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="focusedinput" class="col-md-3 label-control" for="projectinput1">
+                                            <?= __('Helper1 Paid Amount') ?></label>
+                                        <div class="col-sm-9">
+                                            <?php
+                                            echo $this->Form->input('helper1_payment_amount', ['class' => 'form-control', 'empty' => true, 'label' => false, 'div' => false]);
+                                            ?>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="focusedinput" class="col-md-3 label-control" for="projectinput1">
+                                            <?= __('Helper2 Paid Amount') ?></label>
+                                        <div class="col-sm-9">
+                                            <?php
+                                            echo $this->Form->input('helper2_payment_amount', ['class' => 'form-control', 'empty' => true, 'label' => false, 'div' => false]);
                                             ?>
                                         </div>
                                     </div>
